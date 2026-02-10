@@ -1,5 +1,5 @@
 buildscript {
-    ext.kotlin_version = '1.7.0'
+    ext.kotlin_version = '1.8.10'
     repositories {
         google()
         jcenter()
@@ -28,4 +28,22 @@ subprojects {
 
 task clean(type: Delete) {
     delete rootProject.buildDir
+}
+
+configurations.all {
+    resolutionStrategy {
+        force "org.jetbrains.kotlin:kotlin-stdlib:1.7.10"
+        force "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.7.10"
+        force "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.7.10"
+    }
+}
+
+subprojects {
+    project.configurations.all {
+        resolutionStrategy.eachDependency { details ->
+            if (details.requested.group == 'org.jetbrains.kotlin' && !details.requested.name.contains('test')) {
+                details.useVersion '1.8.10'
+            }
+        }
+    }
 }
